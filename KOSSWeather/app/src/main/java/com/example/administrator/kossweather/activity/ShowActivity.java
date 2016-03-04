@@ -1,6 +1,7 @@
 package com.example.administrator.kossweather.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +31,8 @@ public class ShowActivity extends AppCompatActivity {
     private TextView temp2Text;
     private TextView currentDateText;
 
+    private Button switchCity;
+    private Button updateWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,33 @@ public class ShowActivity extends AppCompatActivity {
         temp2Text=(TextView)findViewById(R.id.temp2);
         currentDateText=(TextView)findViewById(R.id.current_date);
 
+        switchCity=(Button)findViewById(R.id.switch_city);
+        updateWeather=(Button)findViewById(R.id.update_button);
 
+        switchCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ShowActivity.this,SelectActivity.class);
+                intent.putExtra("from_showactivity",true);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        updateWeather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(ShowActivity.this);
+                String weatherCode=preferences.getString("weather_code",null);
+                if(!TextUtils.isEmpty(weatherCode))
+                {
+                    publishText.setText("同步中");
+
+                    showProgressDialog();
+                    queryWeatherInfo(weatherCode);
+                }
+            }
+        });
 
         String countryCode=getIntent().getStringExtra("county_code");
         if(TextUtils.isEmpty(countryCode))
@@ -104,9 +134,11 @@ public class ShowActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 e.printStackTrace();
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        closeProgressDialog();
                         publishText.setText("同步失败");
                     }
                 });
@@ -114,7 +146,7 @@ public class ShowActivity extends AppCompatActivity {
         });
     }
 
-    private void showWeather()
+    private void showWeather()  //直接从Sharepreferences提取显示
     {
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
         cityNameText.setText(preferences.getString("city_name",""));

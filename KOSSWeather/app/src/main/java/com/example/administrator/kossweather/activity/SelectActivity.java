@@ -36,6 +36,7 @@ public class SelectActivity extends AppCompatActivity {
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
     private int currentLevel;
+    private boolean isFromShowActivity;
 
     private ArrayAdapter<String> adapter;
     private List<String> datalist = new ArrayList<>();
@@ -57,9 +58,10 @@ public class SelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        isFromShowActivity=getIntent().getBooleanExtra("from_showactivity",false);
 
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean("city_seleted",false))
+        if(preferences.getBoolean("city_selected",false)&&(!isFromShowActivity))
         {
             Intent intent=new Intent(this,ShowActivity.class);
             startActivity(intent);

@@ -10,13 +10,32 @@
        android:layout_height="50dp"
        android:background="#484E61"
        >
+
+       <Button
+           android:text="选择城市"
+           android:id="@+id/switch_city"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerVertical="true"
+           android:layout_marginLeft="10dp"/>
+
        <TextView
+           android:text="QQQ"
            android:id="@+id/city_name"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_centerInParent="true"
            android:textColor="#fff"
            android:textSize="24sp"/>
+       <Button
+           android:text="更新天气"
+           android:id="@+id/update_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentRight="true"
+           android:layout_centerVertical="true"
+           android:layout_marginRight="10dp"/>
+
    </RelativeLayout>
 
     <RelativeLayout

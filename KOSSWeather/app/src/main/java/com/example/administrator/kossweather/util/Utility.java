@@ -98,7 +98,7 @@ public class Utility {
         try
         {
 
-            Log.i("AAA","进入解析JSON");
+//            Log.i("AAA","进入解析JSON");
 
             JSONObject jsonObject= new JSONObject(response);
             JSONObject weatherInfo=jsonObject.getJSONObject("weatherinfo");
