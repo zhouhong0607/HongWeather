@@ -2,6 +2,9 @@ package com.example.administrator.kossweather.activity;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -55,6 +58,19 @@ public class SelectActivity extends AppCompatActivity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getBoolean("city_seleted",false))
+        {
+            Intent intent=new Intent(this,ShowActivity.class);
+            startActivity(intent);
+            finish();
+//            return;
+        }
+
+
+
+
+
         setContentView(R.layout.activity_select);
 
         titleText = (TextView) findViewById(R.id.title);
@@ -75,6 +91,13 @@ public class SelectActivity extends AppCompatActivity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel==LEVEL_COUNTY)
+                {
+                    String countyCode=countyList.get(position).getCountyCode();
+                    Intent intent=new Intent(SelectActivity.this,ShowActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
