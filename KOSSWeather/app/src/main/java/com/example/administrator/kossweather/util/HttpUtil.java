@@ -31,12 +31,12 @@ public class HttpUtil {
                     Log.i("AAA",address);
 
                     connection=(HttpURLConnection)url.openConnection();
-
-//                    if (Build.VERSION.SDK != null
-//                            && Build.VERSION.SDK_INT > 13) {
-//                      connection.setRequestProperty("Connection", "close");
-//                    }
-
+             /**************************仔细研究下,没有这段代码 getinpustream抛出异常***************************/
+                    if (Build.VERSION.SDK != null
+                            && Build.VERSION.SDK_INT > 13) {
+                      connection.setRequestProperty("Connection", "close");
+                    }
+            /**************************仔细研究下***************************/
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);

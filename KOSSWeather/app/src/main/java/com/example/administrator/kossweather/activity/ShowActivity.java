@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.kossweather.R;
+import com.example.administrator.kossweather.service.AutoUpdateService;
 import com.example.administrator.kossweather.util.HttpCallbackListener;
 import com.example.administrator.kossweather.util.HttpUtil;
 import com.example.administrator.kossweather.util.Utility;
@@ -154,9 +155,11 @@ public class ShowActivity extends AppCompatActivity {
         temp2Text.setText(preferences.getString("temp2",""));
         weatherDespText.setText(preferences.getString("weather_desp",""));
         publishText.setText("今天"+preferences.getString("publish_time","")+"发布");
-        currentDateText.setText(preferences.getString("current_data",""));
+        currentDateText.setText(preferences.getString("current_data", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+        Intent i=new Intent(this, AutoUpdateService.class);
+        startService(i);
     }
 
     private void showProgressDialog() {

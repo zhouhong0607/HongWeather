@@ -22,6 +22,18 @@
             android:name=".activity.ShowActivity"
             android:label="@string/title_activity_show" >
         </activity>
+
+        <service
+            android:name=".service.AutoUpdateService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver
+            android:name=".receiver.AutoUpdateReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
     </application>
 
 </manifest>
