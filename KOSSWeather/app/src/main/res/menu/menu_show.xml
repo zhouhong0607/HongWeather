@@ -4,4 +4,7 @@
     tools:context="com.example.administrator.kossweather.activity.ShowActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    1<item android:id="@+id/exit" android:title="退出"
+    android:orderInCategory="100" app:showAsAction="never" />
 </menu>

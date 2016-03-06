@@ -195,6 +195,9 @@ public class ShowActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==R.id.exit)
+        {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
