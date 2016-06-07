@@ -25,7 +25,7 @@ public class QuickAdapter extends BaseQuickAdapter<Item>
     protected  void  convert(BaseViewHolder helper,Item item)
     {
         helper.setText(R.id.info_text,item.getTxt());
-        CardView cardView=helper.getView(R.id.card_view);
-        cardView.setBackgroundColor(Color.parseColor(item.getTxtColor()));
+//        CardView cardView=helper.getView(R.id.card_view);
+//        cardView.setBackgroundColor(Color.parseColor(item.getTxtColor()));
     }
 }
