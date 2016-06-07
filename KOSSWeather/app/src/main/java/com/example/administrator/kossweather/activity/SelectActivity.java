@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.administrator.kossweather.R;
+import com.example.administrator.kossweather.adapter.Item;
+import com.example.administrator.kossweather.adapter.QuickAdapter;
 import com.example.administrator.kossweather.database.DatabaseOperator;
 import com.example.administrator.kossweather.datamodel.City;
 import com.example.administrator.kossweather.datamodel.County;
@@ -38,9 +43,14 @@ public class SelectActivity extends AppCompatActivity {
     private int currentLevel;
     private boolean isFromShowActivity;
 
-    private ArrayAdapter<String> adapter;
-    private List<String> datalist = new ArrayList<>();
-    private ListView listView;
+//    private ArrayAdapter<String> adapter;
+
+    BaseQuickAdapter<Item> quickAdapter;
+
+    private List<Item> datalist = new ArrayList<>();
+    //    private ListView listView;
+    private RecyclerView mRecyclerView;
+
     private TextView titleText;
     private ProgressDialog progressDialog;
     private DatabaseOperator databaseOperator;
@@ -58,51 +68,69 @@ public class SelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        isFromShowActivity=getIntent().getBooleanExtra("from_showactivity",false);
+        isFromShowActivity = getIntent().getBooleanExtra("from_showactivity", false);
 
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean("city_selected",false)&&(!isFromShowActivity))
-        {
-            Intent intent=new Intent(this,ShowActivity.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean("city_selected", false) && (!isFromShowActivity)) {
+            Intent intent = new Intent(this, ShowActivity.class);
             startActivity(intent);
             finish();
 //            return;
         }
-
-
-
-
-
         setContentView(R.layout.activity_select);
 
         titleText = (TextView) findViewById(R.id.title);
 
-        listView = (ListView) findViewById(R.id.select_list);
+//        listView = (ListView) findViewById(R.id.select_list);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+         quickAdapter = new QuickAdapter(this, R.layout.item_view, datalist);
+        quickAdapter.openLoadAnimation();
+        quickAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+                @Override public void onItemClick(View view, int position) {
+                    if (currentLevel == LEVEL_PROVINCE) {
+                        selectedProvince = provinceList.get(position);
+                        queryCities();
+                    } else if (currentLevel == LEVEL_CITY) {
+                        selectedCity = cityList.get(position);
+                        queryCounties();
+                    }else if(currentLevel==LEVEL_COUNTY)
+                    {
+                        String countyCode=countyList.get(position).getCountyCode();
+                        Intent intent=new Intent(SelectActivity.this,ShowActivity.class);
+                        intent.putExtra("county_code",countyCode);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+             });
+        mRecyclerView.setAdapter(quickAdapter);
 
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datalist);
-        listView.setAdapter(adapter);
+//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datalist);
+//        listView.setAdapter(adapter);
         databaseOperator = DatabaseOperator.getInstance(this);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (currentLevel == LEVEL_PROVINCE) {
-                    selectedProvince = provinceList.get(position);
-                    queryCities();
-                } else if (currentLevel == LEVEL_CITY) {
-                    selectedCity = cityList.get(position);
-                    queryCounties();
-                }else if(currentLevel==LEVEL_COUNTY)
-                {
-                    String countyCode=countyList.get(position).getCountyCode();
-                    Intent intent=new Intent(SelectActivity.this,ShowActivity.class);
-                    intent.putExtra("county_code",countyCode);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (currentLevel == LEVEL_PROVINCE) {
+//                    selectedProvince = provinceList.get(position);
+//                    queryCities();
+//                } else if (currentLevel == LEVEL_CITY) {
+//                    selectedCity = cityList.get(position);
+//                    queryCounties();
+//                }else if(currentLevel==LEVEL_COUNTY)
+//                {
+//                    String countyCode=countyList.get(position).getCountyCode();
+//                    Intent intent=new Intent(SelectActivity.this,ShowActivity.class);
+//                    intent.putExtra("county_code",countyCode);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            }
+//        });
         queryProvinces();
     }
 
@@ -112,10 +140,12 @@ public class SelectActivity extends AppCompatActivity {
         if (provinceList.size() > 0) {
             datalist.clear();
             for (Province province : provinceList) {
-                datalist.add(province.getProvinceName());
+                Item item=new Item();
+                item.setTxt(province.getProvinceName());
+                datalist.add(item);
             }
-            adapter.notifyDataSetChanged();//更新listview
-            listView.setSelection(0);
+            quickAdapter.notifyDataSetChanged();//更新listview
+            mRecyclerView.setSelected(false);
             titleText.setText("省份");
             currentLevel = LEVEL_PROVINCE;
 
@@ -130,10 +160,13 @@ public class SelectActivity extends AppCompatActivity {
         if (cityList.size() > 0) {
             datalist.clear();
             for (City city : cityList) {
-                datalist.add(city.getCityName());
+                Item item=new Item();
+                item.setTxt(city.getCityName());
+                datalist.add(item);
+
             }
-            adapter.notifyDataSetChanged();//更新listview
-            listView.setSelection(0);
+            quickAdapter.notifyDataSetChanged();//更新listview
+            mRecyclerView.setSelected(false);
             titleText.setText(selectedProvince.getProvinceName());
             currentLevel = LEVEL_CITY;
 
@@ -148,10 +181,13 @@ public class SelectActivity extends AppCompatActivity {
         if (countyList.size() > 0) {
             datalist.clear();
             for (County county : countyList) {
-                datalist.add(county.getCountyName());
+                Item item=new Item();
+                item.setTxt(county.getCountyName());
+                datalist.add(item);
+
             }
-            adapter.notifyDataSetChanged();//更新listview
-            listView.setSelection(0);
+            quickAdapter.notifyDataSetChanged();//更新listview
+            mRecyclerView.setSelected(false);
             titleText.setText(selectedCity.getCityName());
             currentLevel = LEVEL_COUNTY;
 

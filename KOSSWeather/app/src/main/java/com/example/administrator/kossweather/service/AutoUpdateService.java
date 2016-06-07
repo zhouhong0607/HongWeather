@@ -53,13 +53,13 @@ public class AutoUpdateService extends Service {
             @Override
             public void onFinish(String response) {
                 Utility.handleWeatherResponse(AutoUpdateService.this,response);
-                Log.i("AAA", "后台更新成功");
+//                Log.i("AAA", "后台更新成功");
             }
 
             @Override
             public void onError(Exception e) {
                 e.printStackTrace();
-                Log.e("AAA","后台更新失败");
+//                Log.e("AAA","后台更新失败");
             }
         });
     }
