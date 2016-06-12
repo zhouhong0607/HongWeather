@@ -28,7 +28,7 @@ public class HttpUtil {
                 try
                 {
                     URL url=new URL(address);
-                    Log.i("AAA",address);
+//                    Log.i("AAA",address);
 
                     connection=(HttpURLConnection)url.openConnection();
              /**************************仔细研究下,没有这段代码 getinpustream抛出异常***************************/

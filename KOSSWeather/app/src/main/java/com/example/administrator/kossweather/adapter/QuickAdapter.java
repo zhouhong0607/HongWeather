@@ -1,5 +1,6 @@
 package com.example.administrator.kossweather.adapter;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
@@ -18,14 +19,16 @@ public class QuickAdapter extends BaseQuickAdapter<Item>
 
     public  QuickAdapter(Context context,int layoutResId,List data)
     {
-        super(context,layoutResId,data);
+        super(context, layoutResId, data);
     }
+
+
 
     @Override
     protected  void  convert(BaseViewHolder helper,Item item)
     {
         helper.setText(R.id.info_text,item.getTxt());
-//        CardView cardView=helper.getView(R.id.card_view);
-//        cardView.setBackgroundColor(Color.parseColor(item.getTxtColor()));
+        CardView cardView=helper.getView(R.id.card_view);
+        cardView.setBackgroundColor(Color.parseColor(item.getTxtColor()));
     }
 }

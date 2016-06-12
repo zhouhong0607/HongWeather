@@ -43,12 +43,8 @@ public class SelectActivity extends AppCompatActivity {
     private int currentLevel;
     private boolean isFromShowActivity;
 
-//    private ArrayAdapter<String> adapter;
-
     BaseQuickAdapter<Item> quickAdapter;
-
     private List<Item> datalist = new ArrayList<>();
-    //    private ListView listView;
     private RecyclerView mRecyclerView;
 
     private TextView titleText;
@@ -66,7 +62,6 @@ public class SelectActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         isFromShowActivity = getIntent().getBooleanExtra("from_showactivity", false);
 
@@ -75,18 +70,16 @@ public class SelectActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ShowActivity.class);
             startActivity(intent);
             finish();
-//            return;
         }
         setContentView(R.layout.activity_select);
 
         titleText = (TextView) findViewById(R.id.title);
-
-//        listView = (ListView) findViewById(R.id.select_list);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
+
          quickAdapter = new QuickAdapter(this, R.layout.item_view, datalist);
-        quickAdapter.openLoadAnimation();
+        quickAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         quickAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
                 @Override public void onItemClick(View view, int position) {
                     if (currentLevel == LEVEL_PROVINCE) {
@@ -106,31 +99,7 @@ public class SelectActivity extends AppCompatActivity {
                 }
              });
         mRecyclerView.setAdapter(quickAdapter);
-
-
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, datalist);
-//        listView.setAdapter(adapter);
         databaseOperator = DatabaseOperator.getInstance(this);
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (currentLevel == LEVEL_PROVINCE) {
-//                    selectedProvince = provinceList.get(position);
-//                    queryCities();
-//                } else if (currentLevel == LEVEL_CITY) {
-//                    selectedCity = cityList.get(position);
-//                    queryCounties();
-//                }else if(currentLevel==LEVEL_COUNTY)
-//                {
-//                    String countyCode=countyList.get(position).getCountyCode();
-//                    Intent intent=new Intent(SelectActivity.this,ShowActivity.class);
-//                    intent.putExtra("county_code",countyCode);
-//                    startActivity(intent);
-//                    finish();
-//                }
-//            }
-//        });
         queryProvinces();
     }
 
